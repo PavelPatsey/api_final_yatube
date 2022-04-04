@@ -1,10 +1,13 @@
 from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 
-from .views import PostViewSet
+from .views import CommentViewSet, PostViewSet
 
 router = SimpleRouter()
 router.register("posts", PostViewSet)
+router.register(
+    r"posts/(?P<post_id>\d+)/comments", CommentViewSet, basename="comment"
+)
 
 app_name = "api"
 

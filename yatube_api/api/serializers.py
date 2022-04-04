@@ -1,7 +1,6 @@
+from posts.models import Comment, Post
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
-
-from posts.models import Comment, Post
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -11,7 +10,7 @@ class PostSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        fields = "__all__"
+        fields = ("id", "text", "author", "image", "group", "pub_date")
         model = Post
 
 

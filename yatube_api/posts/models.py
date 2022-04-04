@@ -30,8 +30,27 @@ class Comment(models.Model):
 
 
 class Group(models.Model):
-    pass
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=50, unique=True)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.title
 
 
 class Follow(models.Model):
-    pass
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Подписчик",
+        related_name="follower",
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="На кого подписались",
+        related_name="following",
+    )
+
+    def __str__(self):
+        return f"{self.user}_to_{self.author}"

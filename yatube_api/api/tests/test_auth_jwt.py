@@ -1,8 +1,7 @@
 from django.test import TestCase
+from posts.models import User
 from rest_framework import status
 from rest_framework.test import APIClient
-
-from posts.models import User
 
 
 class AuthJWTTest(TestCase):

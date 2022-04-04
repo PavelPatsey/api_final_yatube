@@ -5,7 +5,10 @@ from posts.models import Comment, Post
 
 
 class PostSerializer(serializers.ModelSerializer):
-    author = SlugRelatedField(slug_field="username", read_only=True)
+    author = SlugRelatedField(
+        slug_field="username",
+        read_only=True,
+    )
 
     class Meta:
         fields = "__all__"

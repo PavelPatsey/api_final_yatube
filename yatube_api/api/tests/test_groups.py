@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 
-class PGroupViewsTest(TestCase):
+class GroupViewsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(username="testusername")

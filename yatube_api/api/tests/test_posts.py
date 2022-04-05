@@ -88,11 +88,7 @@ class PostViewsTest(TestCase):
         """Тестируем get запрос поста неавторизованным пользователем"""
         url = f"/api/v1/posts/{self.post.id}/"
         response = self.guest_client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(
-            response.json(),
-            {"detail": "Учетные данные не были предоставлены."},
-        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_post_put_200(self):
         """Обновление публикации. 200 Удачное выполнение запроса"""

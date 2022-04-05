@@ -3,6 +3,8 @@ from posts.models import Post, User
 from rest_framework import status
 from rest_framework.test import APIClient
 
+POST_AMOUNT_TO_CREATE = 10
+
 
 class PostViewsTest(TestCase):
     @classmethod
@@ -237,3 +239,22 @@ class PostViewsTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["text"], "test text 1")
         self.assertEqual(response.json()["author"], "testusername")
+
+    def test_post_pagination_get_200(self):
+        """Получение публикации c пагинацией. 200 Удачное выполнение запроса"""
+        for i in range(POST_AMOUNT_TO_CREATE):
+            Post.objects.create(
+                text=f"test text {i + 2}",
+                author=self.user,
+            )
+        limit = 2
+        offset = 2
+        url = f"/api/v1/posts/?limit={limit}&offset={offset}"
+        response = self.authorized_client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(type(response.json()), dict)
+        self.assertTrue("results" in response.json())
+        self.assertEqual(len(response.json().get("results")), limit)
+        self.assertEqual(
+            response.json().get("results")[0].get("text"), "test text 3"
+        )

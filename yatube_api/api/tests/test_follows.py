@@ -8,10 +8,10 @@ class FollowViewsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(username="testusername")
-        cls.author = User.objects.create_user(username="testauthorname")
-        cls.follow = Follow.objects.create(
+        cls.following = User.objects.create_user(username="testfollowing")
+        Follow.objects.create(
             user=cls.user,
-            following=cls.author,
+            following=cls.following,
         )
         cls.guest_client = APIClient()
         cls.authorized_client = APIClient()
@@ -24,16 +24,20 @@ class FollowViewsTest(TestCase):
     def test_get_follow_list_200(self):
         """Возвращает все подписки пользователя, сделавшего запрос."""
         url = "/api/v1/follow/"
+        following_2 = User.objects.create_user(username="testfollowingname_2")
         Follow.objects.create(
-            user=self.author,
-            following=self.user,
+            user=self.user,
+            following=following_2,
         )
         response = self.authorized_client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(type(response.json()), list)
-        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(len(response.json()), 2)
         self.assertEqual(response.json()[0]["user"], "testusername")
-        self.assertEqual(response.json()[0]["following"], "testauthorname")
+        self.assertEqual(response.json()[0]["following"], "testfollowing")
+        self.assertEqual(response.json()[1]["user"], "testusername")
+        self.assertEqual(response.json()[1]["following"], "testfollowingname_2")
+        breakpoint()
 
     def test_get_follow_list_401(self):
         """Подписки. 401 Запрос от имени анонимного пользователя."""
@@ -43,12 +47,34 @@ class FollowViewsTest(TestCase):
         detail = "Учетные данные не были предоставлены."
         self.assertEqual(response.json(), {"detail": detail})
 
-    def test_post_follow_list_201(self):
-        """Подписка. 201 Удачное выполнение запроса."""
-        url = "/api/v1/follow/"
-        author_2 = User.objects.create_user(username="testauthorname2")
-        data = {"following": author_2.username}
-        response = self.authorized_client.post(url, data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(type(response.json()), list)
-        self.assertEqual(len(response.json()), 2)
+    # def test_post_follow_201(self):
+    #     """Подписка. 201 Удачное выполнение подписки."""
+    #     url = "/api/v1/follow/"
+    #     follow_count = Follow.objects.count()
+    #     # breakpoint()
+    #     author_2 = User.objects.create_user(username="testauthorname2")
+    #     # data = {"following": author_2.username}
+    #     data = {"following": "testauthorname2"}
+    #     response = self.authorized_client.post(url, data)
+    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    #     self.assertEqual(type(response.json()), dict)
+    #     self.assertEqual(len(response.json()), 2)
+    #     self.assertEqual(
+    #         response.json(),
+    #         {"user": "testusername", "following": "testauthorname2"},
+    #     )
+    #     self.assertEqual(Follow.objects.count(), follow_count + 1)
+    #     follow = Follow.objects.filter(user=self.user)
+    #     breakpoint()
+    #     self.assertEqual(Follow.objects.count(), follow_count + 1)
+
+    # def test_post_follow_400(self):
+    #     """Подписка. 400 Отсутствует обязательное поле в теле запроса или оно
+    #     не соответствует требованиям"""
+    #     follow_count = Follow.objects.count()
+    #     url = "/api/v1/follow/"
+    #     data = {}
+    #     response = self.authorized_client.post(url, data)
+    #     breakpoint()
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    #     self.assertEqual(type(response.json()), dict)

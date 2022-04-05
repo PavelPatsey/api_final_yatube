@@ -1,11 +1,12 @@
 from django.shortcuts import get_object_or_404
-from posts.models import Follow, Group, Post
-from rest_framework import generics, viewsets
+from posts.models import Group, Post, User
+from rest_framework import generics, status, viewsets
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import (
     IsAuthenticated,
     IsAuthenticatedOrReadOnly,
 )
+from rest_framework.response import Response
 
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (
@@ -57,10 +58,4 @@ class FollowList(generics.ListCreateAPIView):
         return user.follower
 
     def perform_create(self, serializer):
-        author = self.request.user
-        from pprint import pprint
-
-        # breakpoint()
-        following_id = self.kwargs.get("post_id")
-        following = get_object_or_404(Follow, id=following_id)
-        serializer.save(author=author, following=following)
+        serializer.save(user=self.request.user)

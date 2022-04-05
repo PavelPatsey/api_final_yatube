@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from posts.models import Follow, Group, Post
-from rest_framework import viewsets
+from rest_framework import generics, viewsets
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import (
     IsAuthenticated,
@@ -48,8 +48,7 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
-class FollowViewSet(viewsets.ModelViewSet):
-    queryset = Follow.objects.all()
+class FollowList(generics.ListCreateAPIView):
     serializer_class = FollowSerializer
     permission_classes = [IsAuthenticated]
 
@@ -60,7 +59,8 @@ class FollowViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         author = self.request.user
         from pprint import pprint
-        breakpoint()
+
+        # breakpoint()
         following_id = self.kwargs.get("post_id")
-        following = get_object_or_404(Post, id=following_id)
+        following = get_object_or_404(Follow, id=following_id)
         serializer.save(author=author, following=following)

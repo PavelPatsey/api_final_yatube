@@ -81,7 +81,7 @@ class Follow(models.Model):
         User,
         on_delete=models.CASCADE,
         verbose_name="Подписчик",
-        related_name="follower"
+        related_name="follower",
     )
     following = models.ForeignKey(
         User,
@@ -92,3 +92,10 @@ class Follow(models.Model):
 
     def __str__(self):
         return f"{self.user}_to_{self.following}"
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "following"], name="unique_follow"
+            )
+        ]

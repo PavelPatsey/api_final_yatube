@@ -106,5 +106,15 @@ class FollowViewsTest(TestCase):
         data = {"following": "testusername"}
         response = self.authorized_client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        test_json = {'non_field_errors': ["You can't subscribe to yourself"]}
+        test_json = {"non_field_errors": ["You can't subscribe to yourself"]}
         self.assertEqual(response.json(), test_json)
+
+    def test_follow_search_filter(self):
+        """Проверка GET запроса с параметром `search`."""
+        url = f"/api/v1/follow/?search={self.following.username}"
+        response = self.authorized_client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.json(),
+            [{"user": "testusername", "following": "testfollowing"}],
+        )

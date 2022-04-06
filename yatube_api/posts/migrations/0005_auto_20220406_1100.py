@@ -6,12 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('posts', '0004_auto_20220405_1418'),
+        ("posts", "0004_auto_20220405_1418"),
     ]
 
     operations = [
         migrations.AddConstraint(
-            model_name='follow',
-            constraint=models.UniqueConstraint(fields=('user', 'following'), name='unique_follow'),
+            model_name="follow",
+            constraint=models.UniqueConstraint(
+                fields=("user", "following"), name="unique_follow"
+            ),
         ),
     ]

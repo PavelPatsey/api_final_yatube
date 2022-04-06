@@ -100,12 +100,11 @@ class FollowViewsTest(TestCase):
         }
         self.assertEqual(response.json(), test_json)
 
-    # def test_post_follow_400_cant_subscribe_to_yourself(self):
-    #     """Подписка. 400 Нельзя подписаться на самого себя."""
-    #     url = "/api/v1/follow/"
-    #     data = {"following": "testusername"}
-    #     response = self.authorized_client.post(url, data)
-    #     # breakpoint()
-    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-    #     detail = "You can't subscribe to yourself"
-    #     self.assertEqual(response.json(), {"detail": detail})
+    def test_post_follow_400_cant_subscribe_to_yourself(self):
+        """Подписка. 400 Нельзя подписаться на самого себя."""
+        url = "/api/v1/follow/"
+        data = {"following": "testusername"}
+        response = self.authorized_client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        test_json = {'non_field_errors': ["You can't subscribe to yourself"]}
+        self.assertEqual(response.json(), test_json)

@@ -56,14 +56,12 @@ class FollowSerializer(serializers.ModelSerializer):
             )
         ]
 
-    # def validate(self, data):
-    #     """
-    #     check that you can not subscribe to yourself
-    #     """
-    #     # breakpoint()
-    #     user = self.context["request"].user
-    #     following = data.username
-    #     # breakpoint()
-    #     if user == following:
-    #         raise serializers.ValidationError("You can't subscribe to yourself")
-    #     return data
+    def validate(self, data):
+        """
+        check that you can not subscribe to yourself
+        """
+        if self.context["request"].user == data["following"]:
+            raise serializers.ValidationError(
+                "You can't subscribe to yourself"
+            )
+        return data

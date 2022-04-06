@@ -91,4 +91,4 @@ class Follow(models.Model):
     )
 
     def __str__(self):
-        return f"{self.user}_to_{self.author}"
+        return f"{self.user}_to_{self.following}"

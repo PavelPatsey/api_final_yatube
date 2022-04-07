@@ -27,7 +27,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         post_id = self.kwargs.get("post_id")
         post = get_object_or_404(Post, id=post_id)
-        return post.comments
+        return post.comments.all()
 
     def perform_create(self, serializer):
         author = self.request.user
@@ -50,7 +50,7 @@ class FollowList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return user.follower
+        return user.follower.all()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

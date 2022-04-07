@@ -19,14 +19,11 @@ class CommentSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field="username",
     )
-    post = serializers.PrimaryKeyRelatedField(
-        required=False,
-        read_only=True,
-    )
 
     class Meta:
         model = Comment
         fields = "__all__"
+        read_only_fields = ("post",)
 
 
 class GroupSerializer(serializers.ModelSerializer):

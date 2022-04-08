@@ -1,7 +1,8 @@
 from django.test import TestCase
-from posts.models import Post, User
 from rest_framework import status
 from rest_framework.test import APIClient
+
+from posts.models import Post, User
 
 POST_AMOUNT_TO_CREATE = 10
 
